@@ -6,7 +6,7 @@ const nameInput = document.querySelector('#name');
 const emailInput = document.querySelector('#email');
 const msg = document.querySelector('.msg');
 const userList = document.querySelector('#users');
-
+let i=1;
 // Listen for form submit
 myForm.addEventListener('submit', onSubmit);
 
@@ -24,9 +24,10 @@ function onSubmit(e) {
 
 
     // Add text node with input values
-    localStorage.setItem(`${nameInput.value}`, `${emailInput.value}`);
-
-
+   // localStorage.setItem(`${nameInput.value}`, `${emailInput.value}`);
+let myvar= { 'name':  `${nameInput.value}`  , 'email': `${emailInput.value}` }
+let  userdata= JSON.stringify(myvar);
+localStorage.setItem(`user${i++}`,userdata)
     // Clear fields
     nameInput.value = '';
     emailInput.value = '';
