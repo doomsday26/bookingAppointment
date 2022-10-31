@@ -25,11 +25,20 @@ function onSubmit(e) {
 
     // Add text node with input values
    // localStorage.setItem(`${nameInput.value}`, `${emailInput.value}`);
-let myvar= { 'name':  `${nameInput.value}`  , 'email': `${emailInput.value}` }
+let myvar= { name:  `${nameInput.value}`  , email: `${emailInput.value}` }
 let  userdata= JSON.stringify(myvar);
-localStorage.setItem(`user${i++}`,userdata)
+localStorage.setItem(`user${i}`,userdata)
     // Clear fields
     nameInput.value = '';
     emailInput.value = '';
   }
+
+  let ul= document.getElementById('users');
+  
+  let li= document.createElement('li');
+  let deserialisedobj= JSON.parse( localStorage.getItem(`user${i++}`))
+  li.appendChild(document.createTextNode(deserialisedobj.name+" : "+ deserialisedobj.email ))
+  ul.appendChild(li)
+
+
 }
