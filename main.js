@@ -10,6 +10,7 @@ const userList = document.querySelector('#users');
 
 myForm.addEventListener('submit',omsubmit);
 userList.addEventListener('click',removeItem)
+userList.addEventListener('click',EditItem)
 
 function omsubmit(e){
 e.preventDefault();
@@ -45,7 +46,8 @@ for (let i = 0; i < localStorage.length; i++) {
    // creating an li object.
 
 let li= document.createElement('li');
-li.appendChild( document.createTextNode(nameval+ ": "))
+li.appendChild( document.createTextNode(nameval))
+li.appendChild( document.createTextNode( ": "))
 li.appendChild( document.createTextNode(emailval))
 
 //create span
@@ -58,18 +60,43 @@ btn.className='delete'
 btn.appendChild(document.createTextNode('DEL'))
 li.appendChild(btn)
 
+
+// edit button
+let span2 = document.createElement('span');
+span2.appendChild(document.createTextNode('  / '))
+li.appendChild(span2)
+let editbtn = document.createElement('button');
+editbtn.className='edit'
+editbtn.appendChild(document.createTextNode('EDIT'))
+li.appendChild(editbtn)
+
 ul.appendChild(li);
 }
+
+nameInput.value=''
+emailInput.value=''
+
 }
 }
 
 
 function removeItem(e){
     if(e.target.classList.contains('delete')){
-       var li= e.target.parentElement;
-     console.log(li);
-     let key = li.childNodes[1].data;
+    var li= e.target.parentElement;
+
+     let key = li.childNodes[2].data;
      localStorage.removeItem(key);
      userList.removeChild(li);
     }
+}
+
+function EditItem(e){
+    if(e.target.classList.contains('edit')){
+      var li= e.target.parentElement;
+      let key = li.childNodes[2].data;
+      nameInput.value=li.childNodes[0].data;
+      emailInput.value=li.childNodes[2].data;
+      localStorage.removeItem(key);
+      userList.removeChild(li);
+     }
 }
