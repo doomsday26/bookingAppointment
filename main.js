@@ -7,7 +7,7 @@ const msg = document.querySelector('.msg');
 
 window.addEventListener('DOMContentLoaded', ()=>{
   userList.addEventListener('click',removeItem)
-//userList.addEventListener('click',EditItem)
+userList.addEventListener('click',EditItem)
 axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
   showOutput(res);console.log(res.data);
   } )
@@ -125,3 +125,35 @@ showOutput(res);console.log(res.data);
 .catch(err=>console.log(err))
 }
  
+//update the value,
+
+async function EditItem(e){
+
+if(e.target.classList.contains('edit')){
+let li= e.target.parentElement;
+let key = li.id;
+let valuename;
+let valueemail;
+console.log(key);
+await axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment/"+key).then( (res)=>{
+valuename=res.data.name;
+valueemail=res.data.email; 
+console.log(res.data.number); 
+} )
+.catch(err=>console.log(err))
+
+
+await axios.delete("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment/"+key).
+then( async (res)=>{console.log(res.data);
+}).catch(err=>{console.log(err);})
+
+await axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
+  showOutput(res);console.log(res.data);
+  } )
+  .catch(err=>console.log(err))
+
+  nameinput.value=valuename;
+emailinput.value=valueemail;
+}
+
+}
