@@ -6,8 +6,9 @@ const msg = document.querySelector('.msg');
 
 
 window.addEventListener('DOMContentLoaded', ()=>{
-  
-axios.get("https://crudcrud.com/api/60cc912e36e9429b9502a9a6d7a1a861/bookappointment").then(res=>{
+  userList.addEventListener('click',removeItem)
+//userList.addEventListener('click',EditItem)
+axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
   showOutput(res);console.log(res.data);
   } )
   .catch(err=>console.log(err))
@@ -35,12 +36,12 @@ let nameval= nameinput.value;
 let emailval= emailinput.value;
 let obj = {"number":count++,"name" : nameval,"email":emailval }
 
-axios.post('https://crudcrud.com/api/60cc912e36e9429b9502a9a6d7a1a861/bookappointment', obj).then(res=>{
+axios.post('https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment', obj).then(res=>{
   console.log(res.data);
 })
 .catch(err=>console.log(err))
 
-axios.get("https://crudcrud.com/api/60cc912e36e9429b9502a9a6d7a1a861/bookappointment").then(res=>{
+axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
 showOutput(res);console.log(res.data);
 } )
 .catch(err=>console.log(err))
@@ -52,6 +53,12 @@ showOutput(res);console.log(res.data);
 
 
 function showOutput(res) {
+//clear previous items
+
+while (userList.firstChild) {
+  userList.removeChild(userList.lastChild);
+  }
+
   let length= Object.keys(res.data).length 
   console.log(res.data[0]);
 
@@ -62,7 +69,8 @@ for (let i = 0; i <length; i++) {
 
 //creating li object
 let li= document.createElement('li');
-li.id=i;
+
+li.id=destring._id;
 li.appendChild(document.createTextNode(destring.name + ': ' ))
 li.appendChild(document.createTextNode(destring.email ))
 
@@ -98,3 +106,22 @@ nameinput.value='';
 emailinput.value='';
 
 }
+
+
+
+async function removeItem(e){
+  if(e.target.classList.contains('delete')){
+  var li= e.target.parentElement;
+
+   let key = li.id;
+  await axios.delete("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment/"+key).
+   then( async (res)=>{console.log(res.data);
+   }).catch(err=>{console.log(err);})
+  }
+
+ await axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
+showOutput(res);console.log(res.data);
+} )
+.catch(err=>console.log(err))
+}
+ 
