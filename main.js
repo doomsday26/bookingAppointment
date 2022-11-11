@@ -3,12 +3,12 @@ let nameinput= document.getElementById('name');
 let emailinput= document.getElementById('email')
 let userList = document.getElementById('users')
 const msg = document.querySelector('.msg');
-
-
+const http= "https://crudcrud.com/api/d1edb7c901334533a6ac0ef6d2922a60/bookappointment"
+let unikey;
 window.addEventListener('DOMContentLoaded', ()=>{
   userList.addEventListener('click',removeItem)
 userList.addEventListener('click',EditItem)
-axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
+axios.get(http).then(res=>{
   showOutput(res);console.log(res.data);
   } )
   .catch(err=>console.log(err))
@@ -21,7 +21,7 @@ let count=1;
 let form =document.getElementById('my-form')
 form.addEventListener('submit', submitdata)
 
-function submitdata(e){
+async function submitdata(e){
 e.preventDefault();
 if(nameinput.value === '' || emailinput.value === '') {
   //alert('Please enter all fields');
@@ -36,12 +36,12 @@ let nameval= nameinput.value;
 let emailval= emailinput.value;
 let obj = {"number":count++,"name" : nameval,"email":emailval }
 
-axios.post('https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment', obj).then(res=>{
+await axios.post(http, obj).then(res=>{
   console.log(res.data);
 })
 .catch(err=>console.log(err))
 
-axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
+await axios.get(http).then(res=>{
 showOutput(res);console.log(res.data);
 } )
 .catch(err=>console.log(err))
@@ -114,12 +114,12 @@ async function removeItem(e){
   var li= e.target.parentElement;
 
    let key = li.id;
-  await axios.delete("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment/"+key).
+  await axios.delete(http+"/"+key).
    then( async (res)=>{console.log(res.data);
    }).catch(err=>{console.log(err);})
   }
 
- await axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
+ await axios.get(http).then(res=>{
 showOutput(res);console.log(res.data);
 } )
 .catch(err=>console.log(err))
@@ -135,25 +135,50 @@ let key = li.id;
 let valuename;
 let valueemail;
 console.log(key);
-await axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment/"+key).then( (res)=>{
-valuename=res.data.name;
-valueemail=res.data.email; 
+await axios.get(http+ "/"+key).then( (res)=>{
+nameinput.value=res.data.name;
+emailinput.value=res.data.email; 
 console.log(res.data.number); 
-} )
-.catch(err=>console.log(err))
+} ).catch(err=>console.log(err))
+
+unikey=key;
+
+form.removeEventListener('submit',submitdata)
+
+form.addEventListener('submit', updated)
 
 
-await axios.delete("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment/"+key).
-then( async (res)=>{console.log(res.data);
-}).catch(err=>{console.log(err);})
 
-await axios.get("https://crudcrud.com/api/93c06c6207b3406b9ee52f9eae3096fc/bookappointment").then(res=>{
-  showOutput(res);console.log(res.data);
-  } )
-  .catch(err=>console.log(err))
+// await axios.delete(http+"/"+key).
+// then( async (res)=>{console.log(res.data);
+// }).catch(err=>{console.log(err);})
 
-  nameinput.value=valuename;
-emailinput.value=valueemail;
+// await axios.get(http).then(res=>{
+//   showOutput(res);console.log(res.data);
+//   } )
+//   .catch(err=>console.log(err))
+
+//   nameinput.value=valuename;
+// emailinput.value=valueemail;
 }
 
+}
+
+async function updated(e){
+ e.preventDefault();
+  await axios.put(http+"/"+unikey,{
+    "number":count++,
+    "name": nameinput.value,
+    "email":emailinput.value
+  }).then(res=>{console.log(res);}).catch(err=>{console.log(err);})
+
+  form.removeEventListener('submit',updated)
+  form.addEventListener('submit', submitdata)
+  unikey='';
+
+
+  await axios.get(http).then(res=>{
+    showOutput(res);console.log(res.data);
+    } )
+    .catch(err=>console.log(err))
 }
