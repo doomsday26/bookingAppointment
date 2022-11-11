@@ -1,54 +1,59 @@
 // USER FORM SCRIPT
-
-// Put DOM elements into variables
-const myForm = document.querySelector('#my-form');
-const nameInput = document.querySelector('#name');
-const emailInput = document.querySelector('#email');
+let nameinput= document.getElementById('name');
+let emailinput= document.getElementById('email')
+let userList = document.getElementById('users')
 const msg = document.querySelector('.msg');
-const userList = document.querySelector('#users');
 
+let count=1;
 
-myForm.addEventListener('submit',omsubmit);
-userList.addEventListener('click',removeItem)
-userList.addEventListener('click',EditItem)
+let form =document.getElementById('my-form')
+form.addEventListener('submit', submitdata)
 
-function omsubmit(e){
+function submitdata(e){
 e.preventDefault();
-if(nameInput.value === '' || emailInput.value === '') {
-    // alert('Please enter all fields');
-    msg.classList.add('error');
-    msg.innerHTML = 'Please enter all fields';
+if(nameinput.value === '' || emailinput.value === '') {
+  //alert('Please enter all fields');
+  msg.classList.add('error');
+  msg.innerHTML = 'Please enter all fields';
 
-    // Remove error after 3 seconds
-    setTimeout(() => msg.remove(), 3000);
-  } else{
-
-//check if entered email is there in localstorage
-//if present
-if( localStorage.getItem(emailInput.value)!==null){  
-localStorage.removeItem(emailInput.value);
-localStorage.setItem(emailInput.value,nameInput.value);
+  // Remove error after 3 seconds
+  setTimeout(() => msg.remove(), 3000);
 }else{
-    //if absent
-    localStorage.setItem(emailInput.value,nameInput.value)
+
+let nameval= nameinput.value;
+let emailval= emailinput.value;
+let obj = {"number":count++,"name" : nameval,"email":emailval }
+
+axios.post('https://crudcrud.com/api/60cc912e36e9429b9502a9a6d7a1a861/bookappointment', obj).then(res=>{
+console.log(res.data);
+})
+.catch(err=>console.log(err))
+
+axios.get("https://crudcrud.com/api/60cc912e36e9429b9502a9a6d7a1a861/bookappointment").then(res=>{showOutput(res);console.log(res.data); } )
+.catch(err=>console.log(err))
+
 }
-//clear previous items
-let ul= document.getElementById('users');
-while (ul.firstChild) {
-    ul.removeChild(ul.lastChild);
-  }
 
-for (let i = 0; i < localStorage.length; i++) {
-   var emailval= localStorage.key(i);
-   var nameval= localStorage.getItem(emailval);
-   //console.log(nameval+ " "+ emailval);
 
-   // creating an li object.
+}
 
+
+function showOutput(res) {
+  let length= res.data.length
+  console.log(res.data[0]);ss
+
+for (let i = 0; i <length; i++) {
+  let destring= res.data[i];
+  console.log(destring);
+  // console.log(localStorage.key(i),destring.expanse, destring.category,destring.description);
+
+//creating li object
 let li= document.createElement('li');
-li.appendChild( document.createTextNode(nameval))
-li.appendChild( document.createTextNode( ": "))
-li.appendChild( document.createTextNode(emailval))
+li.id=i;
+li.appendChild(document.createTextNode(destring.name + ': ' ))
+li.appendChild(document.createTextNode(destring.email ))
+
+
 
 //create span
 let span = document.createElement('span');
@@ -70,33 +75,13 @@ editbtn.className='edit'
 editbtn.appendChild(document.createTextNode('EDIT'))
 li.appendChild(editbtn)
 
-ul.appendChild(li);
-}
+userList.appendChild(li);
 
-nameInput.value=''
-emailInput.value=''
 
-}
 }
 
 
-function removeItem(e){
-    if(e.target.classList.contains('delete')){
-    var li= e.target.parentElement;
+nameinput.value='';
+emailinput.value='';
 
-     let key = li.childNodes[2].data;
-     localStorage.removeItem(key);
-     userList.removeChild(li);
-    }
-}
-
-function EditItem(e){
-    if(e.target.classList.contains('edit')){
-      var li= e.target.parentElement;
-      let key = li.childNodes[2].data;
-      nameInput.value=li.childNodes[0].data;
-      emailInput.value=li.childNodes[2].data;
-      localStorage.removeItem(key);
-      userList.removeChild(li);
-     }
 }
